@@ -3,7 +3,7 @@ import { Settings, Plus, Trash2, X, Copy, Check, EyeOff, ArrowUpRight, ShieldChe
 import { EventItem } from '../../data/events';
 import { RosterMember } from '../../data/roster';
 import { MechanicalButton } from './MechanicalButton';
-import { getSubmissions } from '../../services/api';
+import { DJANGO_ADMIN_URL, getSubmissions } from '../../services/api';
 import { SITE_CONFIG } from '../../config/siteConfig';
 
 interface QuickAdminDrawerProps {
@@ -333,12 +333,12 @@ export const QuickAdminDrawer: React.FC<QuickAdminDrawerProps> = ({
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </a>
                       <a
-                        href="http://127.0.0.1:8000/admin/"
+                        href={DJANGO_ADMIN_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="py-2 px-3 bg-[#FBBF24] hover:bg-[#F59E0B] text-[#1E293B] rounded-xl text-center font-heading text-xs font-extrabold uppercase transition-all flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_#1E293B]"
                       >
-                        <span>PORT :8000/ADMIN/</span>
+                        <span>BACKEND /ADMIN/</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </a>
                     </div>

@@ -38,7 +38,7 @@ export interface ApiResponse<T = any> {
 }
 
 // Configurable base URL for Django backend
-const DJANGO_API_BASE = import.meta.env.VITE_DJANGO_API_URL || '/api';
+const DJANGO_API_BASE = (import.meta.env.VITE_DJANGO_API_URL || '/api').replace(/\/$/, '');
 const GOOGLE_SHEET_WEBHOOK_URL = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL || '';
 
 /**
@@ -50,11 +50,9 @@ function getCsrfToken(): string | null {
   return match ? match[1] : null;
 }
 
-export const DJANGO_ADMIN_URL = typeof window !== 'undefined' 
-  ? `${window.location.protocol}//${window.location.hostname}:8000/admin/` 
-  : 'http://127.0.0.1:8000/admin/';
+export const DJANGO_ADMIN_URL = `${DJANGO_API_BASE.replace(/\/api$/, '')}/admin/`;
 
-export const EXPORT_CSV_URL = '/api/submissions/export-csv/';
+export const EXPORT_CSV_URL = `${DJANGO_API_BASE}/submissions/export-csv/`;
 
 /**
  * Standard fetch wrapper with Django headers
@@ -100,9 +98,9 @@ async function djangoRequest<T>(endpoint: string, method: string, body?: any): P
   try {
     let response = await fetch(primaryUrl, fetchOptions);
 
-    // If static server served index.html or 404, retry direct backend on port 8000
+    // The Vite proxy is useful locally; deployed builds use VITE_DJANGO_API_URL.
     const contentType = response.headers.get('content-type') || '';
-    if ((response.status === 404 || contentType.includes('text/html')) && typeof window !== 'undefined') {
+    if (import.meta.env.DEV && (response.status === 404 || contentType.includes('text/html')) && typeof window !== 'undefined') {
       const directUrl = getDirectBackendUrl();
       try {
         const directResp = await fetch(directUrl, fetchOptions);
@@ -130,8 +128,8 @@ async function djangoRequest<T>(endpoint: string, method: string, body?: any): P
       data,
     };
   } catch (err: any) {
-    // Primary failed with network error, attempt direct backend on port 8000
-    if (typeof window !== 'undefined') {
+    // In local development, retry the backend directly if the Vite proxy is unavailable.
+    if (import.meta.env.DEV && typeof window !== 'undefined') {
       try {
         const directUrl = getDirectBackendUrl();
         const directResp = await fetch(directUrl, fetchOptions);

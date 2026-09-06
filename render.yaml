@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: edugild-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+    startCommand: gunicorn ecell_backend.wsgi:application
+    healthCheckPath: /api/health/
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "edugild-api.onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: edugild-db
+          property: connectionString
+      - key: GOOGLE_APPS_SCRIPT_WEBHOOK
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        sync: false
+      - key: GOOGLE_SHEET_CREDENTIALS_FILE
+        sync: false
+
+  - type: web
+    name: edugild-website
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_DJANGO_API_URL
+        sync: false
+      - key: VITE_GOOGLE_SHEET_WEBHOOK_URL
+        sync: false
+
+databases:
+  - name: edugild-db
+    databaseName: edugild
+    user: edugild
+    plan: free
