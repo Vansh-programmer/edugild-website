@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="20" fill="#FFFFFF"/>
+  <rect x="24" y="14" width="52" height="16" rx="2.5" fill="#DF4949"/>
+  <rect x="24" y="38" width="52" height="16" rx="2.5" fill="#DF4949"/>
+  <rect x="24" y="62" width="52" height="16" rx="2.5" fill="#DF4949"/>
+  <text x="50" y="92" font-size="14" font-weight="900" fill="#1E293B" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">e-cell</text>
+</svg>
+

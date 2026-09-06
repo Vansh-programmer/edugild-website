@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ecell.avantika.edu.in/sitemap.xml
+
